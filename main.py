@@ -1,17 +1,17 @@
-# Ler nome e altura de n pessoas, informando os dados da mais alta e também da mais baixa
+import os
 
-people = int(input("Quantas pessoas você deseja cadastrar: "))
+def listFilesDirectory(filePath, tabs):
+  localFiles = os.listdir(filePath)
+  for i in range(len(localFiles)):
+    if localFiles[i] in ['.upm', '.git', '__pycache__']: continue
+    print('\t' * tabs, localFiles[i])
 
-i = 0
-names = []
-heights = []
+    if (os.path.isdir(localFiles[i])):
+      listFilesDirectory("{}/{}".format(filePath, localFiles[i]), tabs + 1)
+    
+print("Selecione o arquivo desejado (separando as pastas por '.'): \n")
+listFilesDirectory('.', 0)
 
-while i < people:
-  i = i + 1
-  print(str(i) + "º")
-  names.append(input("Qual o nome da " + str(i) + "º pessoa: "))
-  heights.append(int(input("Qual a altura da " + str(i) + "º pessoa: ")))
+selectedFileName = input("\n")
 
-print("\nA maior pessoa é: {} com {}cm".format(names[heights.index(max(heights))], max(heights)))
-
-print("A menor pessoa é: {} com {}cm".format(names[heights.index(min(heights))], min(heights)))
+mod = __import__(selectedFileName)
