@@ -21,18 +21,26 @@ class View():
     self.controller = controller
     self.janela = tk.Frame(master)
     self.janela.pack()
+    self.frame0_1 = tk.Frame(self.janela)
     self.frame1 = tk.Frame(self.janela)
     self.frame2 = tk.Frame(self.janela)
     self.frame3 = tk.Frame(self.janela)
+    self.frame3_1 = tk.Frame(self.janela)
+    self.frame4_1 = tk.Frame(self.janela)
     self.frame4 = tk.Frame(self.janela)
+    self.frame0_1.pack()
     self.frame1.pack()
     self.frame2.pack()
     self.frame3.pack()
+    self.frame3_1.pack()
+    self.frame4_1.pack()
     self.frame4.pack()
   
+    self.labelInfo0 = tk.Label(self.frame0_1,text="Cadastro de Clientes")
     self.labelInfo1 = tk.Label(self.frame1,text="Nome: ")
     self.labelInfo2 = tk.Label(self.frame2,text="Email: ")
     self.labelInfo3 = tk.Label(self.frame3,text="Código: ")
+    self.labelInfo0.pack(side="left")
     self.labelInfo1.pack(side="left")
     self.labelInfo2.pack(side="left")  
     self.labelInfo3.pack(side="left")  
@@ -44,24 +52,22 @@ class View():
     self.inputText2.pack(side="left")
     self.inputText3.pack(side="left")
   
-    self.buttonSubmit = tk.Button(self.janela,text="Enter")
-    self.buttonClear = tk.Button(self.janela,text="Clear")
+    self.buttonSubmit = tk.Button(self.frame3_1,text="Cadastrar")
+    self.buttonClear = tk.Button(self.frame3_1,text="Limpar")
     self.buttonSubmit.pack(side="left")
     self.buttonClear.pack(side="left")
     self.buttonSubmit.bind("<Button>", controller.enterHandler)
     self.buttonClear.bind("<Button>", controller.clearHandler)  
   
-
-    self.labelInfo4 = tk.Label(self.frame4,text="Código: ")
+    self.labelInfo5 = tk.Label(self.frame4_1,text="\nBusca de Clientes")
+    self.labelInfo5.pack(side="left")  
+    self.labelInfo4 = tk.Label(self.frame4,text="Código:")
     self.labelInfo4.pack(side="left")  
-    self.inputText4 = tk.Entry(self.frame4, width=20)
+    self.inputText4 = tk.Entry(self.frame4, width=20)  
     self.inputText4.pack(side="left")
-    self.buttonFind = tk.Button(self.janela,text="Find")
-    self.buttonFind.pack(side="left")
+    self.buttonFind = tk.Button(self.janela,text="Buscar")
+    self.buttonFind.pack(side="bottom")
     self.buttonFind.bind("<Button>", controller.findClientByCode)
-
-
-    # Ex2: Acrescentar o botão para listar os clientes cadastrados
 
   def mostraJanela(self, titulo, mensagem):
     messagebox.showinfo(titulo, mensagem)
@@ -69,45 +75,45 @@ class View():
 class Controller(): 
   def __init__(self):
     self.root = tk.Tk()
-    self.root.geometry("500x200")
+    self.root.geometry("500x250")
     self.listaClientes = []
 
-    # Cria a view passando referência da janela principal e
-    # de si próprio (controlador)
     self.view = View(self.root, self) 
 
-    self.root.title("Exemplo MVC")
-    # Inicia o mainloop
+    self.root.title("Gestão de clientes")
     self.root.mainloop()
 
   def enterHandler(self, event):
     nomeCli = self.view.inputText1.get()
     emailCli = self.view.inputText2.get()
     codigoCli = self.view.inputText3.get()
-    cliente = ModelCliente(nomeCli, emailCli, codigoCli)
-    self.listaClientes.append(cliente)
-    self.view.mostraJanela("Sucesso", "Cliente cadastrado com sucesso")
-    self.clearHandler(event)
+    if not nomeCli or not emailCli or not codigoCli:
+      self.view.mostraJanela("Erro", "Preencha todos os campos!")
+    else: 
+      cliente = ModelCliente(nomeCli, emailCli, codigoCli)
+      self.listaClientes.append(cliente)
+      self.view.mostraJanela("Sucesso", "Cliente cadastrado com sucesso!")
+      self.clearHandler(event)
 
   def findClientByCode(self, event):
     codigoCli = self.view.inputText4.get()
-    clienteEncontrado = False
-    for cliente in self.listaClientes: 
-      if(cliente.getCodigo() == codigoCli):
-        self.view.mostraJanela("Cliente encontrado!", f"Cliente encontrado! \n\n Nome: {cliente.getNome()} \n Email: {cliente.getEmail()} \n Código: {cliente.getCodigo()}")
-        clienteEncontrado = True
-      
-    if not clienteEncontrado:
-      self.view.mostraJanela("Cliente não encontrado", f"O cliente \"{codigoCli}\" não foi encontrado na nossa base de dados.")
-    self.view.inputText3.delete(0, len(self.view.inputText3.get()))
+    if not codigoCli :
+      self.view.mostraJanela("Erro", "Código de consulta vazio!")
+    else: 
+      clienteEncontrado = False
+      for cliente in self.listaClientes: 
+        if(cliente.getCodigo() == codigoCli):
+          self.view.mostraJanela("Cliente encontrado!", f"Cliente encontrado! \n\n Nome: {cliente.getNome()} \n Email: {cliente.getEmail()} \n Código: {cliente.getCodigo()}")
+          clienteEncontrado = True
+        
+      if not clienteEncontrado:
+        self.view.mostraJanela("Cliente não encontrado", f"Código não cadastrado!")
+      self.view.inputText3.delete(0, len(self.view.inputText3.get()))
 
   def clearHandler(self, event):
     self.view.inputText1.delete(0, len(self.view.inputText1.get()))
     self.view.inputText2.delete(0, len(self.view.inputText2.get()))
     self.view.inputText3.delete(0, len(self.view.inputText3.get()))
     
-  # Ex2: implementar função para listar os clientes cadastrados
-  # def clientesHandler(self, event):
-
 if __name__ == "__main__":
   c = Controller()
