@@ -112,6 +112,16 @@ class CtrlAluno():
       mensagem += f"\n {est.getMatriculaAluno()} - {est.getNome()} - {est.getCurso().getNome()}"
     self.limiteLista = LimExibeAlunos(mensagem)
 
+  def getAlunoMatricula(self, matricula):
+    discRet = None
+    print('aqui dentro', matricula)
+    for aluno in self.listaAlunos:
+      print(aluno.getNroMatric())
+      if aluno.getNroMatric() == matricula:
+        discRet = aluno
+      print("matricula",discRet)
+    return discRet
+
   def criaAluno(self, event):
     curso_selecionado = self.limiteIns.inputCurso.get()
     curso = self.ctrlPrincipal.ctrlCurso.getCurso(curso_selecionado)

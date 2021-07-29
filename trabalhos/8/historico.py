@@ -187,7 +187,7 @@ class CtrlHistorico():
 
   def criaHistorico(self, event):
     alunoSelected = self.limiteIns.inputAluno.get()
-    aluno = self.ctrlPrincipal.ctrlAluno.getAluno(alunoSelected)
+    aluno = self.ctrlPrincipal.ctrlAluno.getAlunoMatricula(alunoSelected)
     nota = self.limiteIns.inputNota.get()
     semestre = self.limiteIns.inputSemestre.get()
     disciplinaSelecionada = self.limiteIns.inputDisciplina.get()
