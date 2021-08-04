@@ -52,7 +52,7 @@ class LimiteInserePlaylist(tk.Toplevel):
 
     self.botaoCadastrarMusica = tk.Button(self.frameBotao ,text="Inserir música")           
     self.botaoCadastrarMusica.pack(side="left")
-    self.botaoCadastrarMusica.bind("<Button>", controle.insereMusicaHandler)
+    self.botaoCadastrarMusica.bind("<Button>", controle.createMusicaHandler)
 
     self.botaoCadastrar = tk.Button(self.frameBotao ,text="Criar Playlist")           
     self.botaoCadastrar.pack(side="left")
@@ -84,7 +84,7 @@ class LimiteConsultaPlaylist(tk.Toplevel):
 
     self.botaoConsultar = tk.Button(self.frameBotao, text = 'Consultar')
     self.botaoConsultar.pack()
-    self.botaoConsultar.bind('<Button>', controle.consultaPlaylistHandler)  
+    self.botaoConsultar.bind('<Button>', controle.findPlaylistHandler)  
     
   def mostraJanela(self, titulo, msg):
     messagebox.showinfo(titulo, msg) 
@@ -93,7 +93,7 @@ class LimiteMostraPlaylist(tk.Toplevel):
   def __init__(self, strr):
     messagebox.showinfo('Lista de músicas', strr)
 
-class ControlePlaylist:       
+class PlaylistController:       
   def __init__(self, controlePrincipal):
     if not os.path.isfile('./playlist.pickle'):
       self.listaPlaylist = []
@@ -102,20 +102,20 @@ class ControlePlaylist:
         self.listaPlaylist = pickle.load(f)
 
     self.controlePrincipal = controlePrincipal
-    self.controleArtista = controlePrincipal.controleArtista
-    self.controleMusica = controlePrincipal.controleMusica
+    self.artistaController = controlePrincipal.artistaController
+    self.musicaController = controlePrincipal.musicaController
   
-  def consultaPlaylist(self):
+  def findPlaylist(self):
     self.LimiteBuscaPlaylist = LimiteConsultaPlaylist(self)
 
   def cadastraPlaylist(self):
     self.listaMusicasSelecionadas = []     
     self.listaArtistas = []
-    for arti in self.controleArtista.getArtistas():
+    for arti in self.artistaController.getArtistas():
       self.listaArtistas.append(arti.getNome())
     self.LimiteCadastraPlaylist = LimiteInserePlaylist(self, self.listaArtistas)
   
-  def cadastrarPlaylistHandler(self, event):
+  def cadastrarPlaylistHandler(self):
     nomePlaylist = self.LimiteCadastraPlaylist.entraNome.get()
     musicas = self.listaMusicasSelecionadas
     playlist = Playlist(nomePlaylist, musicas)
@@ -123,14 +123,14 @@ class ControlePlaylist:
     self.LimiteCadastraPlaylist.mostraJanela('Aviso', 'Playlist criada com sucesso')
     self.LimiteCadastraPlaylist.destroy()
   
-  def insereMusicaHandler(self, event):
+  def createMusicaHandler(self):
     musicaNome = self.LimiteCadastraPlaylist.listaBox.get(tk.ACTIVE)
-    for musc in self.controleMusica.getMusicas():
+    for musc in self.musicaController.getMusicas():
       if self.isSameMusic(musicaNome, musc.getTitulo()):
         self.listaMusicasSelecionadas.append(musc)
         self.LimiteCadastraPlaylist.listaBox.delete(tk.ACTIVE)
   
-  def consultaPlaylistHandler(self, event):
+  def findPlaylistHandler(self):
     play = self.LimiteBuscaPlaylist.entraTitulo.get()
     strr = ''
     for plst in self.listaPlaylist:
@@ -151,16 +151,16 @@ class ControlePlaylist:
   def isSameArtista(self, artista1, artista2):
     return artista1.strip().lower() == artista2.strip().lower()
 
-  def concluidoCadastraPlaylist(self, event):
+  def concluidoCadastraPlaylist(self):
     self.LimiteCadastraPlaylist.destroy()
   
-  def salvaPlaylist(self):
+  def savePlaylist(self):
     if len(self.listaPlaylist) != 0:
       with open("./playlist.pickle", "wb") as f:
         pickle.dump(self.listaPlaylist, f)
 
   def atualizaListBox(self):
-    listaMusicas = self.controleMusica.getMusicas()
+    listaMusicas = self.musicaController.getMusicas()
     artistaSel = self.LimiteCadastraPlaylist.escolhaArtista.get()
     if  self.LimiteCadastraPlaylist.ultimoArtista != artistaSel:
       vetorMusicas = []

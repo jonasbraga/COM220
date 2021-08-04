@@ -80,7 +80,7 @@ class LimiteMostraArtista:
     else:
       messagebox.showinfo('Aviso', strr)
 
-class ControleArtista:
+class ArtistaController:
   def __init__(self):
     if not os.path.isfile('./artista.pickle'):
       self.listaArtistas = []
@@ -91,21 +91,19 @@ class ControleArtista:
   def getArtistas(self):
     return self.listaArtistas
 
-  # FUNÇÕES DE INICIAÇÃO 
   def cadastraArtista(self):
     self.LimiteCadastraArtista = LimiteInsereArtista(self)
   
-  def consultaArtista(self):
+  def findArtista(self):
     self.LimiteBuscaArtista = LimiteConsultaArtista(self)
 
-  # HANDLERS
-  def cadastrarArtistaHandler(self, event):
+  def cadastrarArtistaHandler(self):
     nome = self.LimiteCadastraArtista.entraNome.get()
     self.listaArtistas.append(Artista(nome))
     self.LimiteCadastraArtista.mostraJanela('Sucesso', 'Artista cadastrado com sucesso')
-    self.limpaNomeInsere(event)
+    self.limpaNomeInsere()
   
-  def consultarArtistaHandler(self, event):
+  def consultarArtistaHandler(self):
     nome = self.LimiteBuscaArtista.entraNome.get()
     strr = f"{nome}\n\n"
     for artista in self.getArtistas():
@@ -116,29 +114,29 @@ class ControleArtista:
             strr += f"{musicas.getNroFaixa()} {musicas.getTitulo()}\n"
           strr += "________________________________\n\n"
         LimiteMostraArtista(strr, True)
-        self.limpaNomeConsulta(event)
+        self.limpaNomeConsulta()
         return
     LimiteMostraArtista('Artista não encontrado', False)
-    self.limpaNomeConsulta(event)
+    self.limpaNomeConsulta()
   
   def isSameArtista(self, artista1, artista2):
     return artista1.strip().lower() == artista2.strip().lower()
 
-  # LIMPA ENTRY
-  def limpaNomeInsere(self, event):
+  # Reset form
+  def limpaNomeInsere(self):
     self.LimiteCadastraArtista.entraNome.delete(0, len(self.LimiteCadastraArtista.entraNome.get()))
   
-  def limpaNomeConsulta(self, event):
+  def limpaNomeConsulta(self):
     self.LimiteBuscaArtista.entraNome.delete(0, len(self.LimiteBuscaArtista.entraNome.get()))
 
-  # PERMANÊNCIA E CONCLUÍDO
-  def salvaArtista(self):
+  # Salvar dados
+  def saveArtista(self):
     if len(self.listaArtistas) != 0:
       with open("./artista.pickle", "wb") as f:
         pickle.dump(self.listaArtistas, f)
   
-  def concluidoInsereHandler(self, event):
+  def concluidoInsereHandler(self):
     self.LimiteCadastraArtista.destroy()
   
-  def concluidoConsultaHandler(self, event):
+  def concluidoConsultaHandler(self):
     self.LimiteBuscaArtista.destroy()

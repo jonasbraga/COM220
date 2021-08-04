@@ -99,7 +99,7 @@ class LimiteMostraMusica:
     else:
       messagebox.showinfo('Aviso', strr)
 
-class ControleMusica:
+class MusicaController:
   def __init__(self, controlePrincipal):
     if not os.path.isfile('./musica.pickle'):
       self.listaMusicas = []
@@ -108,34 +108,29 @@ class ControleMusica:
         self.listaMusicas = pickle.load(f)
     
     self.controlePrincipal = controlePrincipal
-    self.controleArtista = controlePrincipal.controleArtista
+    self.artistaController = controlePrincipal.artistaController
 
       
   def getMusicas(self):
     return self.listaMusicas
 
-  # FUNÇÕES DE INICIAÇÃO 
   def cadastraMusica(self):
     self.LimiteCadastraMusica = LimiteInsereMusica(self)
   
-  def consultaMusica(self):
+  def findMusica(self):
     self.LimiteBuscaMusica = LimiteConsultaMusica(self)
 
-  # HANDLERS
-  def cadastrarMusicaHandler(self, event):
+  def cadastrarMusicaHandler(self):
     titulo = self.LimiteCadastraMusica.entraTitulo.get()
     faixa = self.LimiteCadastraMusica.entraFaixa.get()
     nomeArtista = self.LimiteCadastraMusica.entraArtista.get()
     nomeAlbum = self.LimiteCadastraMusica.entraAlbum.get()
     
-    artista = 1
-    album = 1
-    
-    for art in self.controleArtista.getArtistas():
+    for art in self.artistaController.getArtistas():
       if self.isSameArtista(nomeArtista, art.getNome()):
         artista = art
         break
-      if self.isSameArtista(art.getNome(), self.controleArtista.getArtistas()[-1].getNome()):
+      if self.isSameArtista(art.getNome(), self.artistaController.getArtistas()[-1].getNome()):
         self.LimiteCadastraMusica.mostraJanela('Aviso', 'Artista não encontrado')
         return False
 
@@ -152,8 +147,8 @@ class ControleMusica:
     artista.addMusica(musica)
     album.addMusica(musica)
     self.LimiteCadastraMusica.mostraJanela('Sucesso', 'Música cadastrada com sucesso')
-    self.limpaTituloInsere(event)
-    self.limpaFaixaInsere(event)
+    self.limpaTituloInsere()
+    self.limpaFaixaInsere()
       
   def isSameArtista(self, artista1, artista2):
     return artista1.strip().lower() == artista2.strip().lower()
@@ -164,43 +159,41 @@ class ControleMusica:
   def isSameMusic(self, music1, music2):
     return music1.strip().lower() == music2.strip().lower()
 
-  def consultarMusicaHandler(self, event):
+  def consultarMusicaHandler(self):
     musica = self.LimiteBuscaMusica.entraTitulo.get()
     strr = ''
-    tipo = False
 
     for musc in self.getMusicas():
       if self.isSameMusic(musica, musc.getTitulo()):
-        tipo = True
         strr += f"Música: {musc.getTitulo()}\n"
         strr += f"Faixa: {musc.getNroFaixa()}\n"
         strr += f"Artista: {musc.getArtista().getNome()}\n"
         strr += f"Álbum: {musc.getAlbum().getTitulo()}"
         LimiteMostraMusica(strr, True)
-        self.limpaTituloConsulta(event)
+        self.limpaTituloConsulta()
         return
 
-    LimiteMostraMusica('Musica não encontrada', tipo)
-    self.limpaTituloConsulta(event)
+    LimiteMostraMusica('Musica não encontrada', False)
+    self.limpaTituloConsulta()
 
-  # LIMPA ENTRY
-  def limpaTituloInsere(self, event):
+  # Reset form
+  def limpaTituloInsere(self):
     self.LimiteCadastraMusica.entraTitulo.delete(0, len(self.LimiteCadastraMusica.entraTitulo.get()))
 
-  def limpaFaixaInsere(self, event):
+  def limpaFaixaInsere(self):
     self.LimiteCadastraMusica.entraFaixa.delete(0, len(self.LimiteCadastraMusica.entraFaixa.get()))
   
-  def limpaTituloConsulta(self, event):
+  def limpaTituloConsulta(self):
     self.LimiteBuscaMusica.entraTitulo.delete(0, len(self.LimiteBuscaMusica.entraTitulo.get()))
 
-  # PERMANÊNCIA E CONCLUÍDO
-  def salvaMusica(self):
+  # Salvar dados
+  def saveMusica(self):
     if len(self.listaMusicas) != 0:
       with open("./musica.pickle", "wb") as f:
         pickle.dump(self.listaMusicas, f)
   
-  def concluidoInsereHandler(self, event):
+  def concluidoInsereHandler(self):
     self.LimiteCadastraMusica.destroy()
   
-  def concluidoConsultaHandler(self, event):
+  def concluidoConsultaHandler(self):
     self.LimiteBuscaMusica.destroy()
