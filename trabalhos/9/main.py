@@ -1,87 +1,87 @@
 import tkinter as tk
-import artista 
-import album 
+import artista
+import album
 import musica
 import playlist
 
 class LimitePrincipal:
-	def __init__(self, raiz, controle):
-		self.raiz = raiz
-		self.controle = controle
-		self.raiz.geometry('300x60')
-		self.raiz.title('JonaSongFy')
+  def __init__(self, raiz, controle):
+    self.raiz = raiz
+    self.controle = controle
+    self.raiz.geometry('300x60')
+    self.raiz.title('4sharedfy')
 
-		self.menuBar = tk.Menu(self.raiz)
-		self.menuArtista = tk.Menu(self.menuBar)
-		self.menuMusica = tk.Menu(self.menuBar)
-		self.menuAlbum = tk.Menu(self.menuBar)
-		self.menuPlaylist = tk.Menu(self.menuBar)
-		self.menuSair = tk.Menu(self.menuBar)
+    self.menuBar = tk.Menu(self.raiz)
+    self.menuArtista = tk.Menu(self.menuBar)
+    self.menuMusica = tk.Menu(self.menuBar)
+    self.menuAlbum = tk.Menu(self.menuBar)
+    self.menuPlaylist = tk.Menu(self.menuBar)
+    self.menuSair = tk.Menu(self.menuBar)
 
-		self.menuArtista.add_command(label = 'Cadastrar', command = self.controle.insereArtista)
-		self.menuArtista.add_command(label = 'Consultar', command = self.controle.consultaArtista)
-		self.menuBar.add_cascade(label = 'Artista', menu = self.menuArtista) 
+    self.menuArtista.add_command(label = 'Cadastrar', command = self.controle.createArtista)
+    self.menuArtista.add_command(label = 'Consultar', command = self.controle.findArtista)
+    self.menuBar.add_cascade(label = 'Artista', menu = self.menuArtista)
 
-		self.menuAlbum.add_command(label = 'Cadastrar', command = self.controle.insereAlbum)
-		self.menuAlbum.add_command(label = 'Consultar', command = self.controle.consultaAlbum)
-		self.menuBar.add_cascade(label = 'Álbum', menu = self.menuAlbum)
+    self.menuAlbum.add_command(label = 'Cadastrar', command = self.controle.createAlbum)
+    self.menuAlbum.add_command(label = 'Consultar', command = self.controle.findAlbum)
+    self.menuBar.add_cascade(label = 'Álbum', menu = self.menuAlbum)
 
-		self.menuMusica.add_command(label = 'Cadastrar', command = self.controle.insereMusica)
-		self.menuMusica.add_command(label = 'Consultar', command = self.controle.consultaMusica)
-		self.menuBar.add_cascade(label = 'Música', menu = self.menuMusica) 
+    self.menuMusica.add_command(label = 'Cadastrar', command = self.controle.createMusica)
+    self.menuMusica.add_command(label = 'Consultar', command = self.controle.findMusica)
+    self.menuBar.add_cascade(label = 'Música', menu = self.menuMusica)
 
-		self.menuPlaylist.add_command(label = 'Cadastrar', command = self.controle.inserePlaylist)
-		self.menuPlaylist.add_command(label = 'Consultar', command = self.controle.consultaPlaylist)
-		self.menuBar.add_cascade(label = 'Playlist', menu = self.menuPlaylist)
+    self.menuPlaylist.add_command(label = 'Cadastrar', command = self.controle.createPlaylist)
+    self.menuPlaylist.add_command(label = 'Consultar', command = self.controle.findPlaylist)
+    self.menuBar.add_cascade(label = 'Playlist', menu = self.menuPlaylist)
 
-		self.menuSair.add_command(label = 'Salvar', command = self.controle.salvaDados)
-		self.menuSair.add_command(label = 'Não Salvar', command = lambda: self.raiz.destroy())
-		self.menuBar.add_cascade(label = 'Sair', menu = self.menuSair)
+    self.menuSair.add_command(label = 'Salvar', command = self.controle.saveDados)
+    self.menuSair.add_command(label = 'Não Salvar', command = lambda: self.raiz.destroy())
+    self.menuBar.add_cascade(label = 'Sair', menu = self.menuSair)
 
-		self.raiz.config(menu=self.menuBar)
+    self.raiz.config(menu=self.menuBar)
 
 class ControlePrincipal:
-	def __init__(self):
-		self.raiz = tk.Tk()
-		self.limite = LimitePrincipal(self.raiz, self)
-		self.controleArtista = artista.ControleArtista()
-		self.controleMusica = musica.ControleMusica(self)
-		self.controleAlbum = album.ControleAlbum(self)
-		self.controlePlaylist = playlist.ControlePlaylist(self)
-		
-		self.raiz.mainloop()
+  def __init__(self):
+    self.raiz = tk.Tk()
+    self.limite = LimitePrincipal(self.raiz, self)
+    self.artistaController = artista.ArtistaController()
+    self.musicaController = musica.MusicaController(self)
+    self.albumController = album.AlbumController(self)
+    self.playlistController = playlist.PlaylistController(self)
 
-	def insereArtista(self):
-		self.controleArtista.cadastraArtista()
-	
-	def consultaArtista(self):
-		self.controleArtista.consultaArtista()
-	
-	def insereMusica(self):
-		self.controleMusica.cadastraMusica()
-	
-	def consultaMusica(self):
-		self.controleMusica.consultaMusica()
+    self.raiz.mainloop()
 
-	def insereAlbum(self):
-		self.controleAlbum.cadastraAlbum()
+  def createArtista(self):
+    self.artistaController.cadastraArtista()
 
-	def consultaAlbum(self):
-		self.controleAlbum.consultaAlbum()
-	
-	def inserePlaylist(self):
-		self.controlePlaylist.cadastraPlaylist()
-		self.controlePlaylist.atualizaListBox()
+  def findArtista(self):
+    self.artistaController.findArtista()
 
-	def consultaPlaylist(self):
-		self.controlePlaylist.consultaPlaylist()
+  def createMusica(self):
+    self.musicaController.cadastraMusica()
 
-	def salvaDados(self):
-		self.controleArtista.salvaArtista()
-		self.controleAlbum.salvaAlbum()
-		self.controleMusica.salvaMusica()
-		self.controlePlaylist.salvaPlaylist()
-		self.raiz.destroy()
-	
+  def findMusica(self):
+    self.musicaController.findMusica()
+
+  def createAlbum(self):
+    self.albumController.cadastraAlbum()
+
+  def findAlbum(self):
+    self.albumController.findAlbum()
+
+  def createPlaylist(self):
+    self.playlistController.cadastraPlaylist()
+    self.playlistController.atualizaListBox()
+
+  def findPlaylist(self):
+    self.playlistController.findPlaylist()
+
+  def saveDados(self):
+    self.artistaController.saveArtista()
+    self.albumController.saveAlbum()
+    self.musicaController.saveMusica()
+    self.playlistController.savePlaylist()
+    self.raiz.destroy()
+
 if __name__ == '__main__':
-	App = ControlePrincipal()
+  App = ControlePrincipal()

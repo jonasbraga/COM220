@@ -92,7 +92,7 @@ class LimiteMostraAlbum:
     else:
       messagebox.showinfo('Aviso', strr)
 
-class ControleAlbum:
+class AlbumController:
   def __init__(self, controlePrincipal):
     if not os.path.isfile('./album.pickle'):
       self.listaAlbuns = []
@@ -101,26 +101,24 @@ class ControleAlbum:
         self.listaAlbuns = pickle.load(f)
   
     self.controlePrincipal = controlePrincipal
-    self.controleArtista = controlePrincipal.controleArtista
-    self.controleMusica = controlePrincipal.controleMusica
+    self.artistaController = controlePrincipal.artistaController
+    self.musicaController = controlePrincipal.musicaController
   
   def getAlbums(self):
     return self.listaAlbuns
 
-  # FUNÇÕES DE INICIAÇÃO 
   def cadastraAlbum(self):
     self.LimiteCadastraAlbum = LimiteInsereAlbum(self)
   
-  def consultaAlbum(self):
+  def findAlbum(self):
     self.LimiteBuscaAlbum = LimiteConsultaAlbum(self)
 
-  # HANDLERS
   def cadastrarAlbumHandler(self, event):
     titulo = self.LimiteCadastraAlbum.entraTitulo.get()
     ano = self.LimiteCadastraAlbum.entraAno.get()
     nomeArtista = self.LimiteCadastraAlbum.entraArtista.get()
 
-    for art in self.controleArtista.getArtistas():
+    for art in self.artistaController.getArtistas():
       if self.isSameArtista(nomeArtista, art.getNome()):
         album = Album(titulo, ano, art)
         self.listaAlbuns.append(album)
@@ -153,7 +151,7 @@ class ControleAlbum:
   def isSameAlbum(self, album1, album2):
     return album1.strip().lower() == album2.strip().lower()
 
-  # Reset campos formulário
+  # Reset form
   def limpaTituloInsere(self, event):
     self.LimiteCadastraAlbum.entraTitulo.delete(0, len(self.LimiteCadastraAlbum.entraTitulo.get()))
   
@@ -167,7 +165,7 @@ class ControleAlbum:
     self.LimiteBuscaAlbum.entraTitulo.delete(0, len(self.LimiteBuscaAlbum.entraTitulo.get()))
 
   # Salvar dados
-  def salvaAlbum(self):
+  def saveAlbum(self):
     if len(self.listaAlbuns) != 0:
       with open("./album.pickle", "wb") as f:
         pickle.dump(self.listaAlbuns, f)

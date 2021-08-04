@@ -99,7 +99,7 @@ class LimiteMostraMusica:
     else:
       messagebox.showinfo('Aviso', strr)
 
-class ControleMusica:
+class MusicaController:
   def __init__(self, controlePrincipal):
     if not os.path.isfile('./musica.pickle'):
       self.listaMusicas = []
@@ -108,34 +108,29 @@ class ControleMusica:
         self.listaMusicas = pickle.load(f)
     
     self.controlePrincipal = controlePrincipal
-    self.controleArtista = controlePrincipal.controleArtista
+    self.artistaController = controlePrincipal.artistaController
 
       
   def getMusicas(self):
     return self.listaMusicas
 
-  # FUNÇÕES DE INICIAÇÃO 
   def cadastraMusica(self):
     self.LimiteCadastraMusica = LimiteInsereMusica(self)
   
-  def consultaMusica(self):
+  def findMusica(self):
     self.LimiteBuscaMusica = LimiteConsultaMusica(self)
 
-  # HANDLERS
   def cadastrarMusicaHandler(self, event):
     titulo = self.LimiteCadastraMusica.entraTitulo.get()
     faixa = self.LimiteCadastraMusica.entraFaixa.get()
     nomeArtista = self.LimiteCadastraMusica.entraArtista.get()
     nomeAlbum = self.LimiteCadastraMusica.entraAlbum.get()
     
-    artista = 1
-    album = 1
-    
-    for art in self.controleArtista.getArtistas():
+    for art in self.artistaController.getArtistas():
       if self.isSameArtista(nomeArtista, art.getNome()):
         artista = art
         break
-      if self.isSameArtista(art.getNome(), self.controleArtista.getArtistas()[-1].getNome()):
+      if self.isSameArtista(art.getNome(), self.artistaController.getArtistas()[-1].getNome()):
         self.LimiteCadastraMusica.mostraJanela('Aviso', 'Artista não encontrado')
         return False
 
@@ -167,11 +162,9 @@ class ControleMusica:
   def consultarMusicaHandler(self, event):
     musica = self.LimiteBuscaMusica.entraTitulo.get()
     strr = ''
-    tipo = False
 
     for musc in self.getMusicas():
       if self.isSameMusic(musica, musc.getTitulo()):
-        tipo = True
         strr += f"Música: {musc.getTitulo()}\n"
         strr += f"Faixa: {musc.getNroFaixa()}\n"
         strr += f"Artista: {musc.getArtista().getNome()}\n"
@@ -180,10 +173,10 @@ class ControleMusica:
         self.limpaTituloConsulta(event)
         return
 
-    LimiteMostraMusica('Musica não encontrada', tipo)
+    LimiteMostraMusica('Musica não encontrada', False)
     self.limpaTituloConsulta(event)
 
-  # LIMPA ENTRY
+  # Reset form
   def limpaTituloInsere(self, event):
     self.LimiteCadastraMusica.entraTitulo.delete(0, len(self.LimiteCadastraMusica.entraTitulo.get()))
 
@@ -193,8 +186,8 @@ class ControleMusica:
   def limpaTituloConsulta(self, event):
     self.LimiteBuscaMusica.entraTitulo.delete(0, len(self.LimiteBuscaMusica.entraTitulo.get()))
 
-  # PERMANÊNCIA E CONCLUÍDO
-  def salvaMusica(self):
+  # Salvar dados
+  def saveMusica(self):
     if len(self.listaMusicas) != 0:
       with open("./musica.pickle", "wb") as f:
         pickle.dump(self.listaMusicas, f)
