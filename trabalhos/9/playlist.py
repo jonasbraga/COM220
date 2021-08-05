@@ -4,6 +4,8 @@ from tkinter import messagebox
 import pickle
 import os
 
+from tkinter import ttk
+
 class Playlist:
   def __init__(self, nome, listaMusicas):
     self.nome = nome
