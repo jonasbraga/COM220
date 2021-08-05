@@ -120,7 +120,7 @@ class MusicaController:
   def findMusica(self):
     self.LimiteBuscaMusica = LimiteConsultaMusica(self)
 
-  def cadastrarMusicaHandler(self):
+  def cadastrarMusicaHandler(self, event):
     titulo = self.LimiteCadastraMusica.entraTitulo.get()
     faixa = self.LimiteCadastraMusica.entraFaixa.get()
     nomeArtista = self.LimiteCadastraMusica.entraArtista.get()
@@ -147,8 +147,8 @@ class MusicaController:
     artista.addMusica(musica)
     album.addMusica(musica)
     self.LimiteCadastraMusica.mostraJanela('Sucesso', 'Música cadastrada com sucesso')
-    self.limpaTituloInsere()
-    self.limpaFaixaInsere()
+    self.limpaTituloInsere(event)
+    self.limpaFaixaInsere(event)
       
   def isSameArtista(self, artista1, artista2):
     return artista1.strip().lower() == artista2.strip().lower()
@@ -159,7 +159,7 @@ class MusicaController:
   def isSameMusic(self, music1, music2):
     return music1.strip().lower() == music2.strip().lower()
 
-  def consultarMusicaHandler(self):
+  def consultarMusicaHandler(self, event):
     musica = self.LimiteBuscaMusica.entraTitulo.get()
     strr = ''
 
@@ -170,20 +170,20 @@ class MusicaController:
         strr += f"Artista: {musc.getArtista().getNome()}\n"
         strr += f"Álbum: {musc.getAlbum().getTitulo()}"
         LimiteMostraMusica(strr, True)
-        self.limpaTituloConsulta()
+        self.limpaTituloConsulta(event)
         return
 
     LimiteMostraMusica('Musica não encontrada', False)
-    self.limpaTituloConsulta()
+    self.limpaTituloConsulta(event)
 
   # Reset form
-  def limpaTituloInsere(self):
+  def limpaTituloInsere(self, event):
     self.LimiteCadastraMusica.entraTitulo.delete(0, len(self.LimiteCadastraMusica.entraTitulo.get()))
 
-  def limpaFaixaInsere(self):
+  def limpaFaixaInsere(self, event):
     self.LimiteCadastraMusica.entraFaixa.delete(0, len(self.LimiteCadastraMusica.entraFaixa.get()))
   
-  def limpaTituloConsulta(self):
+  def limpaTituloConsulta(self, event):
     self.LimiteBuscaMusica.entraTitulo.delete(0, len(self.LimiteBuscaMusica.entraTitulo.get()))
 
   # Salvar dados
@@ -192,8 +192,8 @@ class MusicaController:
       with open("./musica.pickle", "wb") as f:
         pickle.dump(self.listaMusicas, f)
   
-  def concluidoInsereHandler(self):
+  def concluidoInsereHandler(self,event):
     self.LimiteCadastraMusica.destroy()
   
-  def concluidoConsultaHandler(self):
+  def concluidoConsultaHandler(self,event):
     self.LimiteBuscaMusica.destroy()

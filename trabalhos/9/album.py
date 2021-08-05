@@ -113,7 +113,7 @@ class AlbumController:
   def findAlbum(self):
     self.LimiteBuscaAlbum = LimiteConsultaAlbum(self)
 
-  def cadastrarAlbumHandler(self):
+  def cadastrarAlbumHandler(self, event):
     titulo = self.LimiteCadastraAlbum.entraTitulo.get()
     ano = self.LimiteCadastraAlbum.entraAno.get()
     nomeArtista = self.LimiteCadastraAlbum.entraArtista.get()
@@ -124,9 +124,9 @@ class AlbumController:
         self.listaAlbuns.append(album)
         art.addAlbum(album)
         self.LimiteCadastraAlbum.mostraJanela('Sucesso', 'Álbum cadastrado com sucesso')
-        self.limpaTituloInsere()
-        self.limpaAnoInsere()
-        self.limpaArtistaInsere()
+        self.limpaTituloInsere(event)
+        self.limpaAnoInsere(event)
+        self.limpaArtistaInsere(event)
         return
 
     self.LimiteCadastraAlbum.mostraJanela('Aviso', 'Artista não encontrado')
@@ -134,7 +134,7 @@ class AlbumController:
   def isSameArtista(self, artista1, artista2):
     return artista1.strip().lower() == artista2.strip().lower()
 
-  def consultarAlbumHandler(self):
+  def consultarAlbumHandler(self, event):
     titulo = self.LimiteBuscaAlbum.entraTitulo.get()
     strr = ''
     for album in self.getAlbums():
@@ -143,25 +143,25 @@ class AlbumController:
         for musicas in album.getMusicas():
           strr += f"{musicas.getNroFaixa()} - {musicas.getTitulo()}\n"
         LimiteMostraAlbum(strr, True)
-        self.limpaTituloConsulta()
+        self.limpaTituloConsulta(event)
         return
     LimiteMostraAlbum('Álbum não encontrado', False)
-    self.limpaTituloConsulta()
+    self.limpaTituloConsulta(event)
 
   def isSameAlbum(self, album1, album2):
     return album1.strip().lower() == album2.strip().lower()
 
   # Reset form
-  def limpaTituloInsere(self):
+  def limpaTituloInsere(self, event):
     self.LimiteCadastraAlbum.entraTitulo.delete(0, len(self.LimiteCadastraAlbum.entraTitulo.get()))
   
-  def limpaAnoInsere(self):
+  def limpaAnoInsere(self, event):
     self.LimiteCadastraAlbum.entraAno.delete(0, len(self.LimiteCadastraAlbum.entraAno.get()))
   
-  def limpaArtistaInsere(self):
+  def limpaArtistaInsere(self, event):
     self.LimiteCadastraAlbum.entraArtista.delete(0, len(self.LimiteCadastraAlbum.entraArtista.get()))
   
-  def limpaTituloConsulta(self):
+  def limpaTituloConsulta(self, event):
     self.LimiteBuscaAlbum.entraTitulo.delete(0, len(self.LimiteBuscaAlbum.entraTitulo.get()))
 
   # Salvar dados
@@ -170,8 +170,8 @@ class AlbumController:
       with open("./album.pickle", "wb") as f:
         pickle.dump(self.listaAlbuns, f)
   
-  def concluidoInsereHandler(self):
+  def concluidoInsereHandler(self, event):
     self.LimiteCadastraAlbum.destroy()
   
-  def concluidoConsultaHandler(self):
+  def concluidoConsultaHandler(self, event):
     self.LimiteBuscaAlbum.destroy()

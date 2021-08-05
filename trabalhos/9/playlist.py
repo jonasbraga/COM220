@@ -115,7 +115,7 @@ class PlaylistController:
       self.listaArtistas.append(arti.getNome())
     self.LimiteCadastraPlaylist = LimiteInserePlaylist(self, self.listaArtistas)
   
-  def cadastrarPlaylistHandler(self):
+  def cadastrarPlaylistHandler(self, event):
     nomePlaylist = self.LimiteCadastraPlaylist.entraNome.get()
     musicas = self.listaMusicasSelecionadas
     playlist = Playlist(nomePlaylist, musicas)
@@ -123,14 +123,14 @@ class PlaylistController:
     self.LimiteCadastraPlaylist.mostraJanela('Aviso', 'Playlist criada com sucesso')
     self.LimiteCadastraPlaylist.destroy()
   
-  def createMusicaHandler(self):
+  def createMusicaHandler(self, event):
     musicaNome = self.LimiteCadastraPlaylist.listaBox.get(tk.ACTIVE)
     for musc in self.musicaController.getMusicas():
       if self.isSameMusic(musicaNome, musc.getTitulo()):
         self.listaMusicasSelecionadas.append(musc)
         self.LimiteCadastraPlaylist.listaBox.delete(tk.ACTIVE)
   
-  def findPlaylistHandler(self):
+  def findPlaylistHandler(self, event):
     play = self.LimiteBuscaPlaylist.entraTitulo.get()
     strr = ''
     for plst in self.listaPlaylist:
@@ -151,7 +151,7 @@ class PlaylistController:
   def isSameArtista(self, artista1, artista2):
     return artista1.strip().lower() == artista2.strip().lower()
 
-  def concluidoCadastraPlaylist(self):
+  def concluidoCadastraPlaylist(self, event):
     self.LimiteCadastraPlaylist.destroy()
   
   def savePlaylist(self):

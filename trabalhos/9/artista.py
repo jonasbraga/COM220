@@ -97,13 +97,13 @@ class ArtistaController:
   def findArtista(self):
     self.LimiteBuscaArtista = LimiteConsultaArtista(self)
 
-  def cadastrarArtistaHandler(self):
+  def cadastrarArtistaHandler(self, event):
     nome = self.LimiteCadastraArtista.entraNome.get()
     self.listaArtistas.append(Artista(nome))
     self.LimiteCadastraArtista.mostraJanela('Sucesso', 'Artista cadastrado com sucesso')
-    self.limpaNomeInsere()
+    self.limpaNomeInsere(event)
   
-  def consultarArtistaHandler(self):
+  def consultarArtistaHandler(self, event):
     nome = self.LimiteBuscaArtista.entraNome.get()
     strr = f"{nome}\n\n"
     for artista in self.getArtistas():
@@ -114,16 +114,16 @@ class ArtistaController:
             strr += f"{musicas.getNroFaixa()} {musicas.getTitulo()}\n"
           strr += "________________________________\n\n"
         LimiteMostraArtista(strr, True)
-        self.limpaNomeConsulta()
+        self.limpaNomeConsulta(event)
         return
     LimiteMostraArtista('Artista não encontrado', False)
-    self.limpaNomeConsulta()
+    self.limpaNomeConsulta(event)
   
   def isSameArtista(self, artista1, artista2):
     return artista1.strip().lower() == artista2.strip().lower()
 
   # Reset form
-  def limpaNomeInsere(self):
+  def limpaNomeInsere(self, event):
     self.LimiteCadastraArtista.entraNome.delete(0, len(self.LimiteCadastraArtista.entraNome.get()))
   
   def limpaNomeConsulta(self):
@@ -135,8 +135,8 @@ class ArtistaController:
       with open("./artista.pickle", "wb") as f:
         pickle.dump(self.listaArtistas, f)
   
-  def concluidoInsereHandler(self):
+  def concluidoInsereHandler(self,event):
     self.LimiteCadastraArtista.destroy()
   
-  def concluidoConsultaHandler(self):
+  def concluidoConsultaHandler(self,event):
     self.LimiteBuscaArtista.destroy()
